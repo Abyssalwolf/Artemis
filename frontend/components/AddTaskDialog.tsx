@@ -24,12 +24,17 @@ import { Textarea } from "@/components/ui/textarea";
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
+  expectedTime: z.string().min(1, "Expected time is required"),
 });
 
 interface AddTaskDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddTask: (task: { title: string; description: string }) => void;
+  onAddTask: (task: {
+    title: string;
+    description: string;
+    expectedTime: string;
+  }) => void;
 }
 
 export default function AddTaskDialog({
@@ -42,6 +47,7 @@ export default function AddTaskDialog({
     defaultValues: {
       title: "",
       description: "",
+      expectedTime: "",
     },
   });
 
@@ -88,7 +94,22 @@ export default function AddTaskDialog({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">Add Task</Button>
+            <FormField
+              control={form.control}
+              name="expectedTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Expected Time</FormLabel>
+                  <FormControl>
+                    <Input type="time" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full">
+              Add Task
+            </Button>
           </form>
         </Form>
       </DialogContent>
