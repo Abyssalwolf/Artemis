@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Submitted Data</title>
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAD4xqnxvaYxl5cNZRqREbq_4PBXOthe_s",
+            authDomain: "artemis-9d63d.firebaseapp.com",
+            projectId: "artemis-9d63d",
+            storageBucket: "artemis-9d63d.firebasestorage.app",
+            messagingSenderId: "479078952718",
+            appId: "1:479078952718:web:d1b995e2ad15ba2dcbf15f",
+            measurementId: "G-5HL8RL5NZB"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function fetchAndDisplayData() {
+            const querySnapshot = await getDocs(collection(db, "users"));
+            const dataList = document.getElementById('data-list');
+            dataList.innerHTML = ''; // Clear existing data
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const listItem = document.createElement('li');
+                listItem.textContent = `Name: ${data.name}, Age: ${data.age}, Routine: ${data.routine}`;
+                dataList.appendChild(listItem);
+            });
+        }
+
+        // Fetch data when the page loads
+        window.onload = fetchAndDisplayData;
+    </script>
+</head>
+<body>
+    <h1>Submitted Data</h1>
+    <ul id="data-list">
+        <!-- Submitted data will be displayed here -->
+    </ul>
+</body>
+</html>

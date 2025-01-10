@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Landing Page</title>
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyAD4xqnxvaYxl5cNZRqREbq_4PBXOthe_s",
+            authDomain: "artemis-9d63d.firebaseapp.com",
+            projectId: "artemis-9d63d",
+            storageBucket: "artemis-9d63d.appspot.com",
+            messagingSenderId: "479078952718",
+            appId: "1:479078952718:web:d1b995e2ad15ba2dcbf15f",
+            measurementId: "G-5HL8RL5NZB"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const routine = document.getElementById('routine').value;
+
+            try {
+                const docRef = await addDoc(collection(db, "users"), {
+                    name: name,
+                    age: age,
+                    routine: routine
+                });
+                alert("User created successfully!");
+                window.location.href = `/${docRef.id}/tasks`;
+            } catch (e) {
+                console.error("Error adding user: ", e);
+                alert("Error creating user, please try again.");
+            }
+        }
+
+        window.addEventListener('load', () => {
+            const form = document.getElementById('landing-form');
+            form.addEventListener('submit', handleSubmit);
+        });
+    </script>
+</head>
+<body>
+    <h1>Welcome to Artemis</h1>
+    <form id="landing-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required><br>
+        
+        <label for="routine">Routine:</label>
+        <textarea id="routine" name="routine" required></textarea><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

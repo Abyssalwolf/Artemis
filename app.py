@@ -1,17 +1,26 @@
 from flask import Flask, render_template
 
-# Create an instance of the Flask class
 app = Flask(__name__)
 
-# Define a route and a view function
 @app.route('/')
-def home():
-    return render_template('index.html')
+def landing():
+    return render_template('landing.html')
 
-@app.route('/about')
-def about():
-    return "This is the about page."
+@app.route('/<user_id>/tasks')
+def tasks(user_id):
+    return render_template('tasks.html', user_id=user_id)
 
-# Run the application
+@app.route('/task_details')
+def task_details():
+    return render_template('task_details.html')
+
+@app.route('/focus')
+def focus():
+    return render_template('focus.html')
+
+@app.route('/view-data')
+def view_data():
+    return render_template('view_data.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
