@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0; /* Keep the foreground color as black */
+  --background-start-rgb: 0, 0, 0; /* Change background start to black */
+  --background-end-rgb: 0, 0, 0; /* Change background end to black */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255; /* Change dark mode foreground to white */
+    --background-start-rgb: 0, 0, 0; /* Keep dark mode background start as black */
+    --background-end-rgb: 0, 0, 0; /* Keep dark mode background end as black */
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 0%; /* Change background to black */
+    --foreground: 0 0% 100%; /* Change foreground to white */
+    --card: 0 0% 0%; /* Change card background to black */
+    --card-foreground: 0 0% 100%; /* Change card foreground to white */
+    --popover: 0 0% 0%; /* Change popover background to black */
+    --popover-foreground: 0 0% 100%; /* Change popover foreground to white */
+    --primary: 0 0% 0%; /* Change primary color to black */
+    --primary-foreground: 0 0% 100%; /* Change primary foreground to white */
+    --secondary: 0 0% 50%; /* Adjust secondary color */
+    --secondary-foreground: 0 0% 100%; /* Change secondary foreground to white */
+    --muted: 0 0% 30%; /* Adjust muted color */
+    --muted-foreground: 0 0% 70%; /* Adjust muted foreground color */
+    --accent: 0 0% 50%; /* Adjust accent color */
+    --accent-foreground: 0 0% 100%; /* Change accent foreground to white */
+    --destructive: 0 84.2% 60.2%; /* Adjust destructive color */
+    --destructive-foreground: 0 0% 100%; /* Change destructive foreground to white */
+    --border: 0 0% 50%; /* Adjust border color */
+    --input: 0 0% 50%; /* Adjust input color */
+    --ring: 0 0% 100%; /* Adjust ring color */
+    --chart-1: 12 76% 61%; /* Adjust chart-1 color */
+    --chart-2: 173 58% 39%; /* Adjust chart-2 color */
+    --chart-3: 197 37% 24%; /* Adjust chart-3 color */
+    --chart-4: 43 74% 66%; /* Adjust chart-4 color */
+    --chart-5: 27 87% 67%; /* Adjust chart-5 color */
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 0 0% 0%; /* Keep background as black for dark mode */
+    --foreground: 0 0% 100%; /* Change foreground to white for dark mode */
+    --card: 0 0% 0%; /* Keep card background as black for dark mode */
+    --card-foreground: 0 0% 100%; /* Change card foreground to white for dark mode */
+    --popover: 0 0% 0%; /* Keep popover background as black for dark mode */
+    --popover-foreground: 0 0% 100%; /* Change popover foreground to white for dark mode */
+    --primary: 0 0% 100%; /* Change primary to white for dark mode */
+    --primary-foreground: 0 0% 0%; /* Change primary foreground to black for dark mode */
+    --secondary: 0 0% 30%; /* Adjust secondary color for dark mode */
+    --secondary-foreground: 0 0% 100%; /* Change secondary foreground to white for dark mode */
+    --muted: 0 0% 20%; /* Adjust muted color for dark mode */
+    --muted-foreground: 0 0% 80%; /* Adjust muted foreground color for dark mode */
+    --accent: 0 0% 30%; /* Adjust accent color for dark mode */
+    --accent-foreground: 0 0% 100%; /* Change accent foreground to white for dark mode */
+    --destructive: 0 62.8% 30.6%; /* Adjust destructive color for dark mode */
+    --destructive-foreground: 0 0% 100%; /* Change destructive foreground to white for dark mode */
+    --border: 0 0% 20%; /* Adjust border color for dark mode */
+    --input: 0 0% 20%; /* Adjust input color for dark mode */
+    --ring: 0 0% 100%; /* Adjust ring color for dark mode */
+    --chart-1: 220 70% 50%; /* Adjust chart-1 color for dark mode */
+    --chart-2: 160 60% 45%; /* Adjust chart-2 color for dark mode */
+    --chart-3: 30 80% 55%; /* Adjust chart-3 color for dark mode */
+    --chart-4: 280 65% 60%; /* Adjust chart-4 color for dark mode */
+    --chart-5: 340 75% 55%; /* Adjust chart-5 color for dark mode */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
