@@ -8,7 +8,7 @@ interface Task {
   id: string;
   title: string;
   description: string;
-  expectedTime: string; // Adding expectedTime field
+  expectedDays: number; // Update to expectedDays field
   completed: boolean;
 }
 
@@ -18,14 +18,11 @@ interface TaskListProps {
   onDelete: (taskId: string) => void;
 }
 
-// Function to determine card color based on expected time
-const getCardColor = (expectedTime: string) => {
-  const [hours, minutes] = expectedTime.split(":").map(Number);
-  const totalMinutes = hours * 60 + minutes;
-
-  if (totalMinutes < 5) return "bg-red-500";
-  if (totalMinutes < 15) return "bg-orange-500";
-  return "bg-green-500";
+// Function to determine card color based on expected days
+const getCardColor = (expectedDays: number) => {
+  if (expectedDays <= 1) return "bg-red-500 text-white";
+  if (expectedDays > 1 && expectedDays <= 10) return "bg-orange-500 text-white";
+  return "bg-green-500 text-white";
 };
 
 export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
@@ -42,7 +39,7 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
       {tasks.map((task) => (
         <Card
           key={task.id}
-          className={`aspect-square ${getCardColor(task.expectedTime)}`}
+          className={`aspect-square ${getCardColor(task.expectedDays)}`}
         >
           <CardContent className="flex flex-col h-full p-6">
             <div className="flex-1">
@@ -55,7 +52,7 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
                 <div className="flex-1">
                   <h3
                     className={`font-medium ${
-                      task.completed ? "line-through text-muted-foreground" : ""
+                      task.completed ? "line-through text-gray-300" : ""
                     }`}
                   >
                     {task.title}
@@ -65,20 +62,27 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
               <p
                 className={`text-sm ${
                   task.completed
-                    ? "line-through text-muted-foreground"
-                    : "text-muted-foreground"
+                    ? "line-through text-gray-300"
+                    : "text-gray-100"
                 }`}
               >
                 {task.description}
               </p>
-              <p
-                className={`text-sm ${
-                  task.completed
-                    ? "line-through text-muted-foreground"
-                    : "text-muted-foreground"
-                }`}
-              >
-                Expected Time: {task.expectedTime}
+              <p className="text-sm">
+                Expected Time:{" "}
+                <span
+                  className={`${
+                    task.expectedDays <= 1
+                      ? "text-red-200"
+                      : task.expectedDays > 1 && task.expectedDays <= 10
+                      ? "text-orange-200"
+                      : "text-green-200"
+                  }`}
+                >
+                  {task.expectedDays === 1
+                    ? "1 day"
+                    : `${task.expectedDays} days`}
+                </span>
               </p>
             </div>
             <div className="flex justify-end mt-auto">
@@ -86,7 +90,7 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
                 variant="ghost"
                 size="icon"
                 onClick={() => onDelete(task.id)}
-                className="text-destructive hover:text-destructive/90"
+                className="text-destructive hover:text-destructive/90 text-black"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
