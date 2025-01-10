@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Details</title>
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyAD4xqnxvaYxl5cNZRqREbq_4PBXOthe_s",
+            authDomain: "artemis-9d63d.firebaseapp.com",
+            projectId: "artemis-9d63d",
+            storageBucket: "artemis-9d63d.firebasestorage.app",
+            messagingSenderId: "479078952718",
+            appId: "1:479078952718:web:d1b995e2ad15ba2dcbf15f",
+            measurementId: "G-5HL8RL5NZB"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+</head>
+<body>
+    <h1>Task Details</h1>
+    <!-- Show task details and options to split into sub-tasks with time settings -->
+</body>
+</html>
