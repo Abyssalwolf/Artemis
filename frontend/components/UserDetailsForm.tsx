@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -9,162 +12,185 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { UserCircle, Calendar, ClipboardList, CheckCircle } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormDescription,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { motion } from "framer-motion"; // Add framer-motion for animations
+import { useState } from "react";
+import { Loader2 } from "lucide-react"; // Add loading spinner icon
+import { toast } from "sonner"; // Add toast notifications
 
-const UserDetailsForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    age: "",
-    routine: "",
+const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  age: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+    message: "Please enter a valid age",
+  }),
+  routine: z.string().min(10, "Please provide more details about your routine"),
+});
+
+export default function UserDetailsForm() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      age: "",
+      routine: "",
+    },
   });
-  const [errors, setErrors] = useState({});
-  const [submitted, setSubmitted] = useState(false);
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (formData.name.length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setIsSubmitting(true);
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      localStorage.setItem("userDetails", JSON.stringify(values));
+      toast.success("Profile saved successfully!");
+      router.push("/tasks");
+    } catch (error) {
+      toast.error("Something went wrong!");
+    } finally {
+      setIsSubmitting(false);
     }
-    if (
-      !formData.age ||
-      isNaN(Number(formData.age)) ||
-      Number(formData.age) <= 0
-    ) {
-      newErrors.age = "Please enter a valid age";
-    }
-    if (formData.routine.length < 10) {
-      newErrors.routine = "Please provide more details about your routine";
-    }
-    return newErrors;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = validateForm();
-
-    if (Object.keys(newErrors).length === 0) {
-      setSubmitted(true);
-      setErrors({});
-    } else {
-      setErrors(newErrors);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  if (submitted) {
-    return (
-      <Card className="w-full max-w-md mx-auto">
-        <CardContent className="pt-6">
-          <div className="flex flex-col items-center text-center space-y-4">
-            <CheckCircle className="w-12 h-12 text-green-500" />
-            <h2 className="text-2xl font-bold">Thank you!</h2>
-            <p className="text-gray-600">
-              Your details have been successfully submitted.
-            </p>
-            <Button
-              onClick={() => {
-                setSubmitted(false);
-                setFormData({ name: "", age: "", routine: "" });
-              }}
-              className="mt-4"
-            >
-              Submit Another Response
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">
-          Tell us about yourself
-        </CardTitle>
-        <CardDescription className="text-center">
-          Please fill in your personal details below
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <UserCircle className="w-5 h-5 text-blue-500" />
-              <label className="text-sm font-medium">Name</label>
-            </div>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your name"
-            />
-            {errors.name && (
-              <Alert variant="destructive" className="py-2">
-                <AlertDescription>{errors.name}</AlertDescription>
-              </Alert>
-            )}
-          </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-2xl mx-auto p-4"
+    >
+      <Card className="border-2 shadow-lg">
+        <CardHeader className="text-center space-y-2">
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Tell us about yourself
+          </CardTitle>
+          <CardDescription className="text-gray-500">
+            Fill in your details to personalize your experience
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <motion.div
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold">
+                        Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter your name"
+                          {...field}
+                          className="h-11 text-base transition-all duration-200 focus:ring-2 focus:ring-purple-500"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        This is how we'll address you throughout the app
+                      </FormDescription>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </motion.div>
 
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Calendar className="w-5 h-5 text-blue-500" />
-              <label className="text-sm font-medium">Age</label>
-            </div>
-            <input
-              type="number"
-              name="age"
-              value={formData.age}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your age"
-            />
-            {errors.age && (
-              <Alert variant="destructive" className="py-2">
-                <AlertDescription>{errors.age}</AlertDescription>
-              </Alert>
-            )}
-          </div>
+              <motion.div
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <FormField
+                  control={form.control}
+                  name="age"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold">
+                        Age
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Enter your age"
+                          {...field}
+                          className="h-11 text-base transition-all duration-200 focus:ring-2 focus:ring-purple-500"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Used to customize recommendations for you
+                      </FormDescription>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </motion.div>
 
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <ClipboardList className="w-5 h-5 text-blue-500" />
-              <label className="text-sm font-medium">Daily Routine</label>
-            </div>
-            <textarea
-              name="routine"
-              value={formData.routine}
-              onChange={handleChange}
-              className="w-full p-2 border rounded-md min-h-[100px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Tell us about your daily routine..."
-            />
-            {errors.routine && (
-              <Alert variant="destructive" className="py-2">
-                <AlertDescription>{errors.routine}</AlertDescription>
-              </Alert>
-            )}
-          </div>
+              <motion.div
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+              >
+                <FormField
+                  control={form.control}
+                  name="routine"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-semibold">
+                        Daily Routine
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Tell us about your daily routine..."
+                          className="min-h-[150px] text-base transition-all duration-200 focus:ring-2 focus:ring-purple-500 resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Help us understand your schedule better
+                      </FormDescription>
+                      <FormMessage className="text-red-500" />
+                    </FormItem>
+                  )}
+                />
+              </motion.div>
 
-          <Button
-            type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 transition-colors"
-          >
-            Submit
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button
+                  type="submit"
+                  className="w-full h-12 text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Profile"
+                  )}
+                </Button>
+              </motion.div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
-};
-
-export default UserDetailsForm;
+}
