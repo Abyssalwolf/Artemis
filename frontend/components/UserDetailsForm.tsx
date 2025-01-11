@@ -51,11 +51,10 @@ export default function UserDetailsForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values) {
+    console.log("Submitted values:", values);
     try {
       setIsSubmitting(true);
-
-      // Make API call to the backend
       const response = await fetch("http://127.0.0.1:5000/api/create_user", {
         method: "POST",
         headers: {
@@ -63,16 +62,18 @@ export default function UserDetailsForm() {
         },
         body: JSON.stringify(values),
       });
-
-      const result = await response.json();
+      const result = await response.json().catch(() => {
+        throw new Error("Invalid JSON response from server.");
+      });
 
       if (response.ok && result.success) {
         toast.success("Profile saved successfully!");
-        router.push("/tasks"); // Redirect to tasks page
+        window.location.href = "/tasks";
       } else {
         throw new Error(result.error || "Failed to save user details.");
       }
     } catch (error) {
+      console.error("Submission error:", error);
       toast.error(error.message || "Something went wrong!");
     } finally {
       setIsSubmitting(false);
