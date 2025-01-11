@@ -44,7 +44,7 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
 
   const getNeonShadowClass = (expectedDays: number) => {
     if (expectedDays <= 1) return "neon-red";
-    if (expectedDays > 1 && expectedDays <= 10) return "neon-orange";
+    if (expectedDays > 1 && expectedDays <= 5) return "neon-orange";
     return "neon-green";
   };
 

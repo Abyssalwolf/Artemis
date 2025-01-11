@@ -85,7 +85,8 @@ export default function TasksPage() {
   const progress = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-background/50 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/50 p-4 md:p-8 relative">
+      <button className="absolute top-4 right-4 betn">Points : 0</button>
       <div className="max-w-4xl mx-auto space-y-6">
         <Card className="border-none shadow-lg bg-gradient-to-r from-primary/10 to-primary/5">
           <CardHeader>
