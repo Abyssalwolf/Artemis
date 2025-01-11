@@ -31,8 +31,8 @@ interface TaskListProps {
 export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [dailyTime, setDailyTime] = useState("");
-  const [totalTime, setTotalTime] = useState("");
+  const [dailyMinutes, setDailyMinutes] = useState("");
+  const [totalMinutes, setTotalMinutes] = useState("");
 
   if (tasks.length === 0) {
     return (
@@ -50,17 +50,17 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
 
   const handleViewTask = (task: Task) => {
     setSelectedTask(task);
-    setDailyTime("");
-    setTotalTime("");
+    setDailyMinutes("");
+    setTotalMinutes("");
     setIsModalOpen(true);
   };
 
   const handleSubmit = () => {
-    // Here you can handle the submission of time commitments
+    // Here you can handle the submission of time commitments in minutes
     console.log({
       taskId: selectedTask?.id,
-      dailyTimeCommitment: dailyTime,
-      totalTimeCommitment: totalTime,
+      dailyTimeCommitment: parseInt(dailyMinutes),
+      totalTimeCommitment: parseInt(totalMinutes),
     });
     setIsModalOpen(false);
     window.location.href = `/focus`;
@@ -290,33 +290,33 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="daily-time">
-                  How much time can you spend today? (in hours)
+                  How many minutes can you spend today?
                 </Label>
                 <Input
                   id="daily-time"
                   type="number"
                   min="0"
-                  step="0.5"
-                  placeholder="Enter hours (e.g., 2.5)"
-                  value={dailyTime}
-                  onChange={(e) => setDailyTime(e.target.value)}
+                  step="1"
+                  placeholder="Enter minutes (e.g., 30)"
+                  value={dailyMinutes}
+                  onChange={(e) => setDailyMinutes(e.target.value)}
                   className="w-full"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="total-time">
-                  How much total time are you willing to spend on this project?
-                  (in hours)
+                  How many total minutes are you willing to spend on this
+                  project?
                 </Label>
                 <Input
                   id="total-time"
                   type="number"
                   min="0"
-                  step="0.5"
-                  placeholder="Enter hours (e.g., 10)"
-                  value={totalTime}
-                  onChange={(e) => setTotalTime(e.target.value)}
+                  step="1"
+                  placeholder="Enter minutes (e.g., 120)"
+                  value={totalMinutes}
+                  onChange={(e) => setTotalMinutes(e.target.value)}
                   className="w-full"
                 />
               </div>
