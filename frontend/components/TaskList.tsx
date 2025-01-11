@@ -3,6 +3,7 @@ import { Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import "./addtask.css";
 
 interface Task {
   id: string;
@@ -33,22 +34,30 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
       </div>
     );
   }
+  // Function to determine neon shadow class based on expected days
+  const getNeonShadowClass = (expectedDays: number) => {
+    if (expectedDays <= 1) return "neon-red";
+    if (expectedDays > 1 && expectedDays <= 10) return "neon-orange";
+    return "neon-green";
+  };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="card grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {tasks.map((task) => (
         <Card
           key={task.id}
-          className={`aspect-square ${getCardColor(task.expectedDays)}`}
+          className={`aspect-square ${getNeonShadowClass(
+            task.expectedDays
+          )} shadow-lg hover:shadow-xl transition-shadow duration-300`}
         >
-          <CardContent className="flex flex-col h-full p-6">
+          <CardContent className="flex flex-col h-full p-6 bg-neutral-800">
             <div className="flex-1">
               <div className="flex items-start space-x-4 mb-4">
-                <Checkbox
+                {/* <Checkbox
                   checked={task.completed}
                   onCheckedChange={() => onToggle(task.id)}
                   className="mt-1"
-                />
+                /> */}
                 <div className="flex-1">
                   <h3
                     className={`font-medium ${
@@ -73,10 +82,10 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
                 <span
                   className={`${
                     task.expectedDays <= 1
-                      ? "text-red-200"
+                      ? ""
                       : task.expectedDays > 1 && task.expectedDays <= 10
-                      ? "text-orange-200"
-                      : "text-green-200"
+                      ? ""
+                      : ""
                   }`}
                 >
                   {task.expectedDays === 1
@@ -86,14 +95,167 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
               </p>
             </div>
             <div className="flex justify-end mt-auto">
-              <Button
+              {/* <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => onDelete(task.id)}
                 className="text-destructive hover:text-destructive/90 text-black"
               >
                 <Trash2 className="h-4 w-4" />
-              </Button>
+              </Button> */}
+              <button>
+                View Task
+                <div className="star-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlSpace="preserve"
+                    version="1.1"
+                    style={{
+                      shapeRendering: "geometricPrecision",
+                      textRendering: "geometricPrecision",
+                      imageRendering: "auto",
+                      fillRule: "evenodd",
+                      clipRule: "evenodd",
+                    }}
+                    viewBox="0 0 784.11 815.53"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                  >
+                    <defs></defs>
+                    <g id="Layer_x0020_1">
+                      <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                      <path
+                        className="fil0"
+                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                      ></path>
+                    </g>
+                  </svg>
+                </div>
+                <div className="star-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlSpace="preserve"
+                    version="1.1"
+                    style={{
+                      shapeRendering: "geometricPrecision",
+                      textRendering: "geometricPrecision",
+                      imageRendering: "auto",
+                      fillRule: "evenodd",
+                      clipRule: "evenodd",
+                    }}
+                    viewBox="0 0 784.11 815.53"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                  >
+                    <defs></defs>
+                    <g id="Layer_x0020_1">
+                      <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                      <path
+                        className="fil0"
+                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                      ></path>
+                    </g>
+                  </svg>
+                </div>
+                <div className="star-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlSpace="preserve"
+                    version="1.1"
+                    style={{
+                      shapeRendering: "geometricPrecision",
+                      textRendering: "geometricPrecision",
+                      imageRendering: "auto",
+                      fillRule: "evenodd",
+                      clipRule: "evenodd",
+                    }}
+                    viewBox="0 0 784.11 815.53"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                  >
+                    <defs></defs>
+                    <g id="Layer_x0020_1">
+                      <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                      <path
+                        className="fil0"
+                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                      ></path>
+                    </g>
+                  </svg>
+                </div>
+                <div className="star-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlSpace="preserve"
+                    version="1.1"
+                    style={{
+                      shapeRendering: "geometricPrecision",
+                      textRendering: "geometricPrecision",
+                      imageRendering: "auto",
+                      fillRule: "evenodd",
+                      clipRule: "evenodd",
+                    }}
+                    viewBox="0 0 784.11 815.53"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                  >
+                    <defs></defs>
+                    <g id="Layer_x0020_1">
+                      <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                      <path
+                        className="fil0"
+                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                      ></path>
+                    </g>
+                  </svg>
+                </div>
+                <div className="star-5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlSpace="preserve"
+                    version="1.1"
+                    style={{
+                      shapeRendering: "geometricPrecision",
+                      textRendering: "geometricPrecision",
+                      imageRendering: "auto",
+                      fillRule: "evenodd",
+                      clipRule: "evenodd",
+                    }}
+                    viewBox="0 0 784.11 815.53"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                  >
+                    <defs></defs>
+                    <g id="Layer_x0020_1">
+                      <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                      <path
+                        className="fil0"
+                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                      ></path>
+                    </g>
+                  </svg>
+                </div>
+                <div className="star-6">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlSpace="preserve"
+                    version="1.1"
+                    style={{
+                      shapeRendering: "geometricPrecision",
+                      textRendering: "geometricPrecision",
+                      imageRendering: "auto",
+                      fillRule: "evenodd",
+                      clipRule: "evenodd",
+                    }}
+                    viewBox="0 0 784.11 815.53"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                  >
+                    <defs></defs>
+                    <g id="Layer_x0020_1">
+                      <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                      <path
+                        className="fil0"
+                        d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                      ></path>
+                    </g>
+                  </svg>
+                </div>
+              </button>
             </div>
           </CardContent>
         </Card>

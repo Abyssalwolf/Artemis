@@ -22,3 +22,5 @@ build/
 
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+
+cred.py
