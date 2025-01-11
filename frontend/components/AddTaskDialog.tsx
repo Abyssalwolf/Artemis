@@ -118,7 +118,7 @@ export default function AddTaskDialog({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full buttonn">
               Add Task
             </Button>
           </form>

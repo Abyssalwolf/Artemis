@@ -42,7 +42,7 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
   };
 
   return (
-    <div className="card grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="card grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
       {tasks.map((task) => (
         <Card
           key={task.id}
@@ -53,11 +53,11 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
           <CardContent className="flex flex-col h-full p-6 bg-neutral-800">
             <div className="flex-1">
               <div className="flex items-start space-x-4 mb-4">
-                {/* <Checkbox
+                <Checkbox
                   checked={task.completed}
                   onCheckedChange={() => onToggle(task.id)}
                   className="mt-1"
-                /> */}
+                />
                 <div className="flex-1">
                   <h3
                     className={`font-medium ${
@@ -103,9 +103,9 @@ export default function TaskList({ tasks, onToggle, onDelete }: TaskListProps) {
               >
                 <Trash2 className="h-4 w-4" />
               </Button> */}
-              <button>
+              <button className="buttonn">
                 View Task
-                <div className="star-1">
+                <div className="star-1 buttonn">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     xmlSpace="preserve"

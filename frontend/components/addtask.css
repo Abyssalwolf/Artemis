@@ -1,4 +1,4 @@
-button {
+.buttonn {
   position: relative;
   padding: 12px 35px;
   background: #fec195;
@@ -78,13 +78,13 @@ button {
   transition: all 0.8s ease;
 }
 
-button:hover {
+.buttonn:hover {
   background: transparent;
   color: #fec195;
   box-shadow: 0 0 25px #fec1958c;
 }
 
-button:hover .star-1 {
+.buttonn:hover .star-1 {
   position: absolute;
   top: -80%;
   left: -30%;
@@ -94,7 +94,7 @@ button:hover .star-1 {
   z-index: 2;
 }
 
-button:hover .star-2 {
+.buttonn:hover .star-2 {
   position: absolute;
   top: -25%;
   left: 10%;
@@ -104,7 +104,7 @@ button:hover .star-2 {
   z-index: 2;
 }
 
-button:hover .star-3 {
+.buttonn:hover .star-3 {
   position: absolute;
   top: 55%;
   left: 25%;
@@ -114,7 +114,7 @@ button:hover .star-3 {
   z-index: 2;
 }
 
-button:hover .star-4 {
+.buttonn:hover .star-4 {
   position: absolute;
   top: 30%;
   left: 80%;
@@ -124,7 +124,7 @@ button:hover .star-4 {
   z-index: 2;
 }
 
-button:hover .star-5 {
+.buttonn:hover .star-5 {
   position: absolute;
   top: 25%;
   left: 115%;
@@ -134,7 +134,7 @@ button:hover .star-5 {
   z-index: 2;
 }
 
-button:hover .star-6 {
+.buttonn:hover .star-6 {
   position: absolute;
   top: 5%;
   left: 60%;
@@ -151,19 +151,19 @@ button:hover .star-6 {
 .neon-red {
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.6), 0 0 20px rgba(255, 0, 0, 0.6),
     0 0 30px rgba(255, 0, 0, 0.6);
-  animation: neon-pulse-red 1.5s;
+  animation: neon-pulse-red 1.5s infinite;
 }
 
 .neon-orange {
   box-shadow: 0 0 10px rgba(255, 165, 0, 0.6), 0 0 20px rgba(255, 165, 0, 0.6),
     0 0 30px rgba(255, 165, 0, 0.6);
-  animation: neon-pulse-orange 1.5s;
+  animation: neon-pulse-orange 1.5s infinite;
 }
 
 .neon-green {
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.6), 0 0 20px rgba(0, 255, 0, 0.6),
     0 0 30px rgba(0, 255, 0, 0.6);
-  animation: neon-pulse-green 1.5s;
+  animation: neon-pulse-green 1.5s infinite;
 }
 
 /* Animation keyframes */
