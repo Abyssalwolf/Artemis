@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import TaskList from "@/components/TaskList";
 import AddTaskDialog from "@/components/AddTaskDialog";
+import "../styles.css";
 
 interface UserDetails {
   name: string;
@@ -70,7 +71,14 @@ export default function TasksPage() {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
   };
 
-  if (!userDetails) return <div>Loading...</div>;
+  if (!userDetails)
+    return (
+      <div className="loader">
+        <div data-glitch="Loading..." className="glitch">
+          Loading...
+        </div>
+      </div>
+    );
 
   const completedTasks = tasks.filter((task) => task.completed).length;
   const totalTasks = tasks.length;

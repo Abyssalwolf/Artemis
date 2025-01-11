@@ -1,24 +1,16 @@
 "use client";
+
 import React from "react";
 import LottieBackground from "./components/LottieBackground";
+import PomodoroTimer from "./components/PomodoroTimer";
 
-const HomePage = () => {
+export default function HomePage() {
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-      }}
-    >
+    <div className="relative w-screen h-screen overflow-hidden">
       <LottieBackground />
-      {/* Add your content here */}
-      <div style={{ zIndex: 1, position: "relative" }}>
-        {/* Your page content */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-full -right-1/4 -bottom-64">
+        <PomodoroTimer />
       </div>
     </div>
   );
-};
-
-export default HomePage;
+}
