@@ -40,12 +40,14 @@ interface AddTaskDialogProps {
     description: string;
     expectedDays: number;
   }) => void;
+  userId: string; // Assume userId is passed as a prop
 }
 
 export default function AddTaskDialog({
   open,
   onOpenChange,
   onAddTask,
+  userId,
 }: AddTaskDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,9 +58,31 @@ export default function AddTaskDialog({
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    onAddTask(values);
-    form.reset();
+  // Submit handler for the form
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    // Send task data to the backend
+    const response = await fetch("http://localhost:5000/api/add_task", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: userId,
+        title: values.title,
+        description: values.description,
+        time: values.expectedDays,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      // Successfully added task
+      onAddTask(values); // Callback to the parent to update the UI
+      form.reset(); // Reset form after submitting
+    } else {
+      // Handle error
+      console.error("Error adding task:", data.error);
+    }
   }
 
   return (
