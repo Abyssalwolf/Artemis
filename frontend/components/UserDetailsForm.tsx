@@ -54,13 +54,26 @@ export default function UserDetailsForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setIsSubmitting(true);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      localStorage.setItem("userDetails", JSON.stringify(values));
-      toast.success("Profile saved successfully!");
-      router.push("/tasks");
+
+      // Make API call to the backend
+      const response = await fetch("http://127.0.0.1:5000/api/create_user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        toast.success("Profile saved successfully!");
+        router.push("/tasks"); // Redirect to tasks page
+      } else {
+        throw new Error(result.error || "Failed to save user details.");
+      }
     } catch (error) {
-      toast.error("Something went wrong!");
+      toast.error(error.message || "Something went wrong!");
     } finally {
       setIsSubmitting(false);
     }
@@ -69,78 +82,18 @@ export default function UserDetailsForm() {
   return (
     <>
       <div id="background">
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
-        <div>
-          <span></span>
-        </div>
+        {/* Background design */}
+        {Array.from({ length: 22 }).map((_, index) => (
+          <div key={index}>
+            <span></span>
+          </div>
+        ))}
       </div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-2xl mx-auto p-4 "
+        className="max-w-2xl mx-auto p-4"
       >
         <Card className="border-2 shadow-lg">
           <CardHeader className="text-center space-y-2">
