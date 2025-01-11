@@ -19,7 +19,6 @@ const loaderStyles = `
   z-index: 9999;
 }
 
-/* From Uiverse.io by andrew-demchenk0 */ 
 .glitch {
   position: relative;
   font-size: 25px;
