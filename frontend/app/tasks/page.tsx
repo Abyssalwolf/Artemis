@@ -13,59 +13,64 @@ interface UserDetails {
   routine: string;
 }
 
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  createdAt: string;
+}
+
 export default function TasksPage() {
   const router = useRouter();
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
-  const [tasks, setTasks] = useState<
-    Array<{
-      id: string;
-      title: string;
-      description: string;
-      completed: boolean;
-    }>
-  >([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
-    const storedDetails = localStorage.getItem("userDetails");
-    if (!storedDetails) {
-      router.push("/");
-      return;
+    // Load user data from localStorage
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      setUserDetails(JSON.parse(userData));
     }
-    setUserDetails(JSON.parse(storedDetails));
+
+    // Load tasks from localStorage
     const storedTasks = localStorage.getItem("tasks");
     if (storedTasks) {
       setTasks(JSON.parse(storedTasks));
     }
-  }, [router]);
+  }, []);
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const addTask = (task: { title: string; description: string }) => {
-    const newTask = {
-      id: Date.now().toString(),
+    const newTask: Task = {
+      id: `task_${Date.now()}`, // Generate unique ID
       ...task,
       completed: false,
+      createdAt: new Date().toISOString(),
     };
-    const updatedTasks = [...tasks, newTask];
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+
+    setTasks((prevTasks) => [...prevTasks, newTask]);
     setIsAddTaskOpen(false);
   };
 
   const toggleTask = (taskId: string) => {
-    const updatedTasks = tasks.map((task) =>
-      task.id === taskId ? { ...task, completed: !task.completed } : task
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task
+      )
     );
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   };
 
   const deleteTask = (taskId: string) => {
-    const updatedTasks = tasks.filter((task) => task.id !== taskId);
-    setTasks(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
   };
 
-  if (!userDetails) return null;
+  if (!userDetails) return <div>Loading...</div>;
 
   const completedTasks = tasks.filter((task) => task.completed).length;
   const totalTasks = tasks.length;
@@ -74,12 +79,10 @@ export default function TasksPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/50 p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Welcome Section */}
         <Card className="border-none shadow-lg bg-gradient-to-r from-primary/10 to-primary/5">
           <CardHeader>
             <CardTitle className="text-3xl font-bold flex items-center gap-2">
-              <span className="text-white">Welcome back,</span>{" "}
-              {userDetails.name}
+              <span className="text-white">Welcome,</span> {userDetails.name}
             </CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -108,7 +111,6 @@ export default function TasksPage() {
           </CardContent>
         </Card>
 
-        {/* Progress Card */}
         <Card className="border-none shadow-md">
           <CardContent className="pt-6">
             <div className="flex justify-between items-center mb-4">
@@ -135,7 +137,6 @@ export default function TasksPage() {
           </CardContent>
         </Card>
 
-        {/* Task List */}
         <Card className="border-none shadow-md">
           <CardHeader>
             <CardTitle>Your Tasks</CardTitle>
@@ -151,7 +152,6 @@ export default function TasksPage() {
           </CardContent>
         </Card>
 
-        {/* Add Task Dialog */}
         <AddTaskDialog
           open={isAddTaskOpen}
           onOpenChange={setIsAddTaskOpen}
