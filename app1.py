@@ -123,41 +123,41 @@ def get_user_tasks():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     
-@app.route('/api/delete_subtask', methods=['POST'])
-def delete_subtask():
-    data = request.json
-    task_id = data.get('taskId')
-    subtask_index = data.get('subtaskIndex')
+# @app.route('/api/delete_subtask', methods=['POST'])
+# def delete_subtask():
+#     data = request.json
+#     task_id = data.get('taskId')
+#     subtask_index = data.get('subtaskIndex')
 
-    try:
-        # Get the task document
-        task_ref = db.collection('tasks').document(task_id)
-        task_doc = task_ref.get()
+#     try:
+#         # Get the task document
+#         task_ref = db.collection('tasks').document(task_id)
+#         task_doc = task_ref.get()
 
-        if not task_doc.exists:
-            return jsonify({"success": False, "error": "Task not found"}), 404
+#         if not task_doc.exists:
+#             return jsonify({"success": False, "error": "Task not found"}), 404
 
-        # Get the current subtasks and subtask_times
-        task_data = task_doc.to_dict()
-        subtasks = task_data.get('subtasks', [])
-        subtask_times = task_data.get('subtask_times', [])
+#         # Get the current subtasks and subtask_times
+#         task_data = task_doc.to_dict()
+#         subtasks = task_data.get('subtasks', [])
+#         subtask_times = task_data.get('subtask_times', [])
 
-        # Remove the subtask and its corresponding time
-        if subtask_index < len(subtasks):
-            subtasks.pop(subtask_index)
-            subtask_times.pop(subtask_index)
+#         # Remove the subtask and its corresponding time
+#         if subtask_index < len(subtasks):
+#             subtasks.pop(subtask_index)
+#             subtask_times.pop(subtask_index)
 
-            # Update the task document
-            task_ref.update({
-                'subtasks': subtasks,
-                'subtask_times': subtask_times
-            })
+#             # Update the task document
+#             task_ref.update({
+#                 'subtasks': subtasks,
+#                 'subtask_times': subtask_times
+#             })
 
-            return jsonify({"success": True}), 200
-        else:
-            return jsonify({"success": False, "error": "Invalid subtask index"}), 400
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+#             return jsonify({"success": True}), 200
+#         else:
+#             return jsonify({"success": False, "error": "Invalid subtask index"}), 400
+#     except Exception as e:
+#         return jsonify({"success": False, "error": str(e)}), 500
     
 @app.route('/api/get_task_details', methods=['GET'])
 def get_task_details():
@@ -178,6 +178,80 @@ def get_task_details():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route('/api/create_focus_session', methods=['POST'])
+def create_focus_session():
+    data = request.json
+    task_id = data.get('taskId')
+    time_spent_today = data.get('timeSpentToday')
+    time_to_work_later = data.get('timeToWorkLater')
+
+    try:
+        # Get the task document to extract subtasks
+        task_ref = db.collection('tasks').document(task_id)
+        task_doc = task_ref.get()
+
+        if not task_doc.exists:
+            return jsonify({"success": False, "error": "Task not found"}), 404
+
+        # Get the first 2 subtasks for the focus session
+        subtasks = task_doc.to_dict().get('subtasks', [])[:2]
+
+        # Create a new focus session document
+        focus_session_ref = db.collection('focus_sessions').document()
+        focus_session_ref.set({
+            'taskId': task_id,
+            'timeSpentToday': time_spent_today,
+            'timeToWorkLater': time_to_work_later,
+            'subtasks': subtasks,
+            'status': False  # Initially, the session is not completed
+        })
+
+        return jsonify({"success": True, "sessionId": focus_session_ref.id}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    
+@app.route('/api/complete_focus_session', methods=['POST'])
+def complete_focus_session():
+    data = request.json
+    session_id = data.get('sessionId')
+
+    try:
+        # Get the focus session document
+        session_ref = db.collection('focus_sessions').document(session_id)
+        session_doc = session_ref.get()
+
+        if not session_doc.exists:
+            return jsonify({"success": False, "error": "Focus session not found"}), 404
+
+        # Get the task ID and subtasks from the session
+        task_id = session_doc.to_dict().get('taskId')
+        session_subtasks = session_doc.to_dict().get('subtasks', [])
+
+        # Get the task document
+        task_ref = db.collection('tasks').document(task_id)
+        task_doc = task_ref.get()
+
+        if not task_doc.exists:
+            return jsonify({"success": False, "error": "Task not found"}), 404
+
+        # Remove the session subtasks from the task document
+        task_subtasks = task_doc.to_dict().get('subtasks', [])
+        updated_subtasks = [subtask for subtask in task_subtasks if subtask not in session_subtasks]
+
+        # Update the task document with the remaining subtasks
+        task_ref.update({
+            'subtasks': updated_subtasks
+        })
+
+        # Mark the focus session as completed
+        session_ref.update({
+            'status': True
+        })
+
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    
 
 
 if __name__ == '__main__':
