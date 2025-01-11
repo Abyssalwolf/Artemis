@@ -72,3 +72,8 @@ def task_step(task,description,time):
     return outlist, outlist1
 
 task, time=task_step('Clean the kitchen','floors, dishes, the oven are especially dirty and need cleaning','3')
+print("blah")
+print(task)
+print("blah")
+print(time)
+print("blah")
