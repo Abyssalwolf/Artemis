@@ -40,14 +40,12 @@ interface AddTaskDialogProps {
     description: string;
     expectedDays: number;
   }) => void;
-  userId: string; // Assume userId is passed as a prop
 }
 
 export default function AddTaskDialog({
   open,
   onOpenChange,
   onAddTask,
-  userId,
 }: AddTaskDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,30 +56,37 @@ export default function AddTaskDialog({
     },
   });
 
-  // Submit handler for the form
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Send task data to the backend
-    const response = await fetch("http://localhost:5000/api/add_task", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: userId,
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      // Get existing tasks from localStorage
+      const existingTasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+      // Create new task object
+      const newTask = {
+        id: `task_${Date.now()}`, // Generate unique ID
         title: values.title,
         description: values.description,
-        time: values.expectedDays,
-      }),
-    });
+        expectedDays: values.expectedDays,
+        completed: false,
+        createdAt: new Date().toISOString(),
+      };
 
-    const data = await response.json();
-    if (data.success) {
-      // Successfully added task
-      onAddTask(values); // Callback to the parent to update the UI
-      form.reset(); // Reset form after submitting
-    } else {
-      // Handle error
-      console.error("Error adding task:", data.error);
+      // Add new task to existing tasks
+      const updatedTasks = [...existingTasks, newTask];
+
+      // Save updated tasks to localStorage
+      localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+
+      // Call the parent component's callback
+      onAddTask(values);
+
+      // Reset the form
+      form.reset();
+
+      // Close the dialog
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error adding task:", error);
     }
   }
 

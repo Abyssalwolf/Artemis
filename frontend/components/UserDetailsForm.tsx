@@ -1,10 +1,6 @@
-"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { useRouter } from "next/navigation";
-import "./UserDetails.css";
 import {
   Card,
   CardContent,
@@ -25,25 +21,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CoolMode } from "./ui/cool-mode";
-import { motion } from "framer-motion"; // Add framer-motion for animations
-import { useState } from "react";
-import { Loader2 } from "lucide-react"; // Add loading spinner icon
-import { toast } from "sonner"; // Add toast notifications
-
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  age: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-    message: "Please enter a valid age",
-  }),
-  routine: z.string().min(10, "Please provide more details about your routine"),
-});
+import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function UserDetailsForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm({
     defaultValues: {
       name: "",
       age: "",
@@ -51,30 +37,64 @@ export default function UserDetailsForm() {
     },
   });
 
-  async function onSubmit(values) {
-    console.log("Submitted values:", values);
+  const validateForm = (values) => {
+    const errors = {};
+
+    if (!values.name || values.name.length < 2) {
+      errors.name = "Name must be at least 2 characters";
+    }
+
+    if (!values.age || isNaN(Number(values.age)) || Number(values.age) <= 0) {
+      errors.age = "Please enter a valid age";
+    }
+
+    if (!values.routine || values.routine.length < 10) {
+      errors.routine = "Please provide more details about your routine";
+    }
+
+    return errors;
+  };
+
+  function onSubmit(values) {
+    const errors = validateForm(values);
+
+    if (Object.keys(errors).length > 0) {
+      Object.keys(errors).forEach((key) => {
+        form.setError(key, {
+          type: "manual",
+          message: errors[key],
+        });
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      const response = await fetch("http://127.0.0.1:5000/api/create_user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-      const result = await response.json().catch(() => {
-        throw new Error("Invalid JSON response from server.");
-      });
 
-      if (response.ok && result.success) {
-        toast.success("Profile saved successfully!");
-        window.location.href = "/tasks";
-      } else {
-        throw new Error(result.error || "Failed to save user details.");
-      }
+      // Generate a unique ID for the user
+      const userId = `user_${Date.now()}`;
+
+      // Create user data object
+      const userData = {
+        ...values,
+        id: userId,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Save user data to localStorage
+      localStorage.setItem("userData", JSON.stringify(userData));
+
+      // Initialize empty tasks array
+      localStorage.setItem("tasks", JSON.stringify([]));
+
+      toast.success("Profile saved successfully!");
+      console.log("Submitted values:", userData);
+
+      // Navigate to tasks page
+      router.push("/tasks");
     } catch (error) {
       console.error("Submission error:", error);
-      toast.error(error.message || "Something went wrong!");
+      toast.error("Failed to save profile");
     } finally {
       setIsSubmitting(false);
     }
@@ -83,7 +103,6 @@ export default function UserDetailsForm() {
   return (
     <>
       <div id="background">
-        {/* Background design */}
         {Array.from({ length: 22 }).map((_, index) => (
           <div key={index}>
             <span></span>
